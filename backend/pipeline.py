@@ -1,20 +1,23 @@
-import threading
-import queue
 import io
-import requests
-import xml.etree.ElementTree as ET
+import queue
 import re
-import zipfile
 import sqlite3
+import threading
+import xml.etree.ElementTree as ET
+import zipfile
 
-WEBDAVURL = "https://arquivos.receitafederal.gov.br/public.php/webdav/"
-TOKEN = "YggdBLfdninEJX9"
+import db
+import requests
 
-def get_dir() -> str | None:
+
+_WEBDAVURL = "https://arquivos.receitafederal.gov.br/public.php/webdav/"
+_TOKEN = "YggdBLfdninEJX9"
+
+def _get_dir() -> str | None:
     response = requests.request(
         "PROPFIND",
-        url = WEBDAVURL,
-        auth = (TOKEN, ""),
+        url = _WEBDAVURL,
+        auth = (_TOKEN, ""),
         headers = {"Depth": "1"}
     )
 
@@ -41,11 +44,11 @@ def get_dir() -> str | None:
 
     return dirs[-1]
 
-def get_files(dir: str) -> list[str] | None:
+def _get_files(dir: str) -> list[str] | None:
     response = requests.request(
         "PROPFIND",
-        url = WEBDAVURL+dir,
-        auth = (TOKEN, ""),
+        url = _WEBDAVURL+dir,
+        auth = (_TOKEN, ""),
         headers = {"Depth": "1"}
     )
 
@@ -72,57 +75,61 @@ def get_files(dir: str) -> list[str] | None:
     
     return files
 
-def download(dir: str, files: list[str], zip_buffer: queue.Queue):
+def _download(dir: str, files: list[str], zip_buffer: queue.Queue):
     counter = 0
     for file in files:
+        if counter == 1: break
         counter += 1
         print(f"download {file}")
         response = requests.request(
             "GET",
-            url = WEBDAVURL+dir+'/'+file,
-            auth = (TOKEN, ""),
+            url = _WEBDAVURL+dir+'/'+file,
+            auth = (_TOKEN, ""),
             headers = {"Depth": "1"}
         )
 
         if response.status_code != 200:
             return None
 
-        zip_buffer.put(response.content)
+        zip_buffer.put((file, response.content))
 
     zip_buffer.put(None)
     
-def extract(zip_buffer: queue.Queue, extracted_file_buffer: queue.Queue):
+def _extract(zip_buffer: queue.Queue, extracted_file_buffer: queue.Queue):
     while True:
         zip = zip_buffer.get()
         if zip is None:
             extracted_file_buffer.put(None)
             break
         
-        with zipfile.ZipFile(io.BytesIO(zip)) as zip_ref:
+        with zipfile.ZipFile(io.BytesIO(zip[1])) as zip_ref:
             data = zip_ref.namelist()
-            for name in data: extracted_file_buffer.put(zip_ref.open(name)) # talvez coloca varios IO
+            for name in data: extracted_file_buffer.put((zip[0], zip_ref.read(name))) 
 
-def write():
-    pass
+def _write(db: db.DataBase, extracted_file_buffer: queue.Queue):
+    while True:
+        ext_file = extracted_file_buffer.get()
+        if ext_file is None: break
+        db.write(ext_file)
+                
 
-if __name__ == "__main__":
-    # con = sqlite3.connect("cnpj.db")
-    # cur = con.cursor()
-    
+def init_pipeline(db: db.DataBase):
     zip_buffer = queue.Queue(maxsize=3) 
     extracted_file_buffer = queue.Queue(maxsize=3)
     
-    dir = get_dir()
+    dir = _get_dir()
     if dir is None: raise RuntimeError("Directory not found") 
 
-    files = get_files(dir)
+    files = _get_files(dir)
 
-    download_thread = threading.Thread(target=download, args=(dir, files, zip_buffer))
-    extract_thread = threading.Thread(target=extract, args=(zip_buffer, extracted_file_buffer))
+    download_thread = threading.Thread(target=_download, args=(dir, files, zip_buffer))
+    extract_thread = threading.Thread(target=_extract, args=(zip_buffer, extracted_file_buffer))
+    write_thread = threading.Thread(target=_write, args=(db, extracted_file_buffer))
 
     download_thread.start()
     extract_thread.start()
-    
+    write_thread.start()
+
     download_thread.join()
     extract_thread.join()
-
+    write_thread.join()
