@@ -1,7 +1,6 @@
 import io
 import queue
 import re
-import sqlite3
 import threading
 import xml.etree.ElementTree as ET
 import zipfile
@@ -68,7 +67,7 @@ def _get_files(dir: str) -> list[str] | None:
         if file is None:
             continue
 
-        match = re.search(r'\/(\w+\.zip)', file) 
+        match = re.search(r'^(?!.*(Qualificacoes|Paises|Simples))\/(\w+\.zip)', file) 
 
         if match:
             files.append(match.group(1))
@@ -76,10 +75,7 @@ def _get_files(dir: str) -> list[str] | None:
     return files
 
 def _download(dir: str, files: list[str], zip_buffer: queue.Queue):
-    counter = 0
     for file in files:
-        if counter == 1: break
-        counter += 1
         print(f"download {file}")
         response = requests.request(
             "GET",
@@ -92,12 +88,13 @@ def _download(dir: str, files: list[str], zip_buffer: queue.Queue):
             return None
 
         zip_buffer.put((file, response.content))
-
+        print(f"download feito {file}")
     zip_buffer.put(None)
     
 def _extract(zip_buffer: queue.Queue, extracted_file_buffer: queue.Queue):
     while True:
         zip = zip_buffer.get()
+        print(f"extraindo {zip[0]}")
         if zip is None:
             extracted_file_buffer.put(None)
             break
@@ -105,6 +102,7 @@ def _extract(zip_buffer: queue.Queue, extracted_file_buffer: queue.Queue):
         with zipfile.ZipFile(io.BytesIO(zip[1])) as zip_ref:
             data = zip_ref.namelist()
             for name in data: extracted_file_buffer.put((zip[0], zip_ref.read(name))) 
+            print(f"extraido {zip[0]}")
 
 def _write(db: db.DataBase, extracted_file_buffer: queue.Queue):
     while True:
