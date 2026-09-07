@@ -1,0 +1,98 @@
+:root {
+  /* Cor -------------------------------------------------------------- */
+  --color-bg: #ffffff;
+  --color-surface: #f6f8fc;
+  --color-surface-hover: #eef2fa;
+  --color-border: #e2e6ee;
+  --color-border-strong: #c9cfdc;
+
+  --color-ink: #10131a;
+  --color-ink-soft: #4d5566;
+  --color-ink-faint: #8890a0;
+
+  --color-brand: #1450e0;
+  --color-brand-ink: #0d3aad;
+  --color-brand-wash: #eaf0fe;
+
+  --color-ativa: #147a4e;
+  --color-ativa-bg: #e7f6ee;
+  --color-atencao: #a8650a;
+  --color-atencao-bg: #fbf0dd;
+  --color-inativa: #b6392f;
+  --color-inativa-bg: #fbe9e7;
+  --color-neutro: #5b6472;
+  --color-neutro-bg: #eef0f4;
+
+  /* Tipo --------------------------------------------------------------*/
+  --font-ui: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* Espaço / forma ------------------------------------------------------*/
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --shadow-panel: 0 1px 2px rgba(16, 19, 26, 0.04);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+a {
+  color: var(--color-brand);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-brand-wash);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,0 +1,29 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ativa {
+  color: var(--color-ativa);
+  background: var(--color-ativa-bg);
+}
+
+.atencao {
+  color: var(--color-atencao);
+  background: var(--color-atencao-bg);
+}
+
+.inativa {
+  color: var(--color-inativa);
+  background: var(--color-inativa-bg);
+}
+
+.neutro {
+  color: var(--color-neutro);
+  background: var(--color-neutro-bg);
+}

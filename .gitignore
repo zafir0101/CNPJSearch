@@ -1,0 +1,31 @@
+# =========================
+# BANCO DE DADOS
+# =========================
+**/debug.db
+*.sqlite
+*.sqlite3
+
+# =========================
+# Node/React
+# =========================
+node_modules/
+dist/
+build/
+.npm/
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+env/
+.env
+
+# =========================
+# SISTEMA OPERACIONAL
+# =========================
+.DS_Store
+Thumbs.db

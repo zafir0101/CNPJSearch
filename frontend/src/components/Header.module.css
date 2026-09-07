@@ -1,0 +1,42 @@
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 28px;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.brandBlock {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-brand);
+  white-space: nowrap;
+}
+
+.tagline {
+  font-size: 13px;
+  color: var(--color-ink-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.right {
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .tagline {
+    display: none;
+  }
+}

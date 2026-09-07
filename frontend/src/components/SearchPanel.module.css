@@ -1,0 +1,130 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.searchBlock {
+  padding: 20px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.label {
+  display: block;
+  font-size: 12px;
+  color: var(--color-ink-soft);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.searchRow {
+  display: flex;
+  gap: 8px;
+}
+
+.mainInput {
+  flex: 1;
+  padding: 10px 11px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  min-width: 0;
+}
+
+.mainInput:focus {
+  border-color: var(--color-brand);
+}
+
+.searchButton {
+  padding: 10px 16px;
+  background: var(--color-brand);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.searchButton:hover:not(:disabled) {
+  background: var(--color-brand-ink);
+}
+
+.resultsBlock {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px 20px;
+  overflow: hidden;
+}
+
+.resultsHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-ink-soft);
+  text-transform: none;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.resultsCount {
+  background: var(--color-surface);
+  color: var(--color-ink-soft);
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 12px;
+}
+
+.message,
+.hint {
+  font-size: 13px;
+  color: var(--color-ink-faint);
+  margin: 0;
+}
+
+.resultsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.resultItem {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.resultItem:hover {
+  background: var(--color-surface);
+  border-color: var(--color-border-strong);
+}
+
+.resultItemActive {
+  border-color: var(--color-brand);
+  background: var(--color-brand-wash);
+}
+
+.resultName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.resultMeta {
+  font-size: 12px;
+  color: var(--color-ink-faint);
+}
+
