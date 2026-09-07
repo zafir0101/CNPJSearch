@@ -10,9 +10,6 @@ import pipeline
 
 
 class PipelineStatusStore:
-    """Thread-safe holder for the ingestion status, polled by the frontend's
-    provisioning screen at GET /api/v1/status."""
-
     def __init__(self) -> None:
         self._lock = threading.Lock()
         self._data: dict[str, Any] = {

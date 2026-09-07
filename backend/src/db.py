@@ -141,8 +141,6 @@ class DataBase:
         reader = csv.reader(io_text, delimiter=';')
         insert = _format_insert(table_to_insert)
 
-
-        print(f"escrevendo {file[0]}")
         empty_file = False
         while True:
             if empty_file: break
@@ -157,8 +155,6 @@ class DataBase:
 
             self.__con.executemany(insert, values)
             self.__con.commit()    
-
-        print(f"escrito {file[0]}")
 
     def query_empresa_using_cnpj_basico(self, cnpj_basico: str):
         with self.__lock:

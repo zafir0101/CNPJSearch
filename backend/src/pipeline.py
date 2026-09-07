@@ -15,7 +15,6 @@ def _report(on_progress: ProgressCallback | None, **patch) -> None:
     if on_progress is not None:
         on_progress(patch)
 
-
 _WEBDAVURL = "https://arquivos.receitafederal.gov.br/public.php/webdav/"
 _TOKEN = "YggdBLfdninEJX9"
 
@@ -83,7 +82,6 @@ def _get_files(dir: str) -> list[str] | None:
 def _download(dir: str, files: list[str], zip_buffer: queue.Queue, on_progress: ProgressCallback | None = None):
     total = len(files)
     for done, file in enumerate(files, start=1):
-        print(f"download {file}")
         _report(on_progress, stage='baixando', current_file=file, files_done=done - 1, files_total=total)
         response = requests.request(
             "GET",
@@ -96,7 +94,6 @@ def _download(dir: str, files: list[str], zip_buffer: queue.Queue, on_progress: 
             return None
 
         zip_buffer.put((file, response.content))
-        print(f"download feito {file}")
         _report(on_progress, stage='baixando', current_file=file, files_done=done, files_total=total)
     zip_buffer.put(None)
     
@@ -107,12 +104,10 @@ def _extract(zip_buffer: queue.Queue, extracted_file_buffer: queue.Queue, on_pro
             extracted_file_buffer.put(None)
             break
 
-        print(f"extraindo {zip[0]}")
         _report(on_progress, stage='extraindo', current_file=zip[0])
         with zipfile.ZipFile(io.BytesIO(zip[1])) as zip_ref:
             data = zip_ref.namelist()
             for name in data: extracted_file_buffer.put((zip[0], zip_ref.read(name))) 
-            print(f"extraido {zip[0]}")
 
 def _write(db: db.DataBase, extracted_file_buffer: queue.Queue, on_progress: ProgressCallback | None = None):
     while True:
